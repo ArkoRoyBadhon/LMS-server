@@ -3,7 +3,7 @@ import { Document, model, Schema } from 'mongoose'
 interface ILecture extends Document {
   title: string
   module: Schema.Types.ObjectId
-  course: Schema.Types.ObjectId
+  // course: Schema.Types.ObjectId
   video_url: string
   pdf_urls: string[]
   position: number
@@ -21,11 +21,11 @@ const lectureSchema = new Schema<ILecture>({
     ref: 'Module',
     required: true,
   },
-  course: {
-    type: Schema.Types.ObjectId,
-    ref: 'Course',
-    required: true,
-  },
+  // course: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: 'Course',
+  //   required: true,
+  // },
   video_url: {
     type: String,
     required: true,
