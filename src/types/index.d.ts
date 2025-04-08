@@ -1,13 +1,15 @@
-interface JwtPayload {
-  id: string
-  email: string
-  role: UserRole
-}
+// type UserRole = 'ADMIN' | 'USER'
 
-declare global {
-  namespace Express {
-    interface Request {
-      user?: JwtPayload
-    }
-  }
-}
+// interface JwtPayload {
+//   _id: string
+//   email: string
+//   role: UserRole
+// }
+
+// declare global {
+//   namespace Express {
+//     interface Request {
+//       user?: JwtPayload
+//     }
+//   }
+// }

@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from 'express'
+import { Response, NextFunction } from 'express'
+import { userRequest } from '../helpers/extender'
 
 const handleCatchAsync = (
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<void>,
+  fn: (req: userRequest, res: Response, next: NextFunction) => Promise<void>,
 ) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+  return (req: userRequest, res: Response, next: NextFunction) => {
     fn(req, res, next).catch(next)
   }
 }

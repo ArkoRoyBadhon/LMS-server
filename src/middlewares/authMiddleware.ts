@@ -2,28 +2,13 @@
 import envConfig from '../config/envConfig'
 import AppError from '../error/AppError'
 import handleCatchAsync from '../utils/HandleCatchAsync'
-import jwt from 'jsonwebtoken'
-import prisma from '../utils/prisma'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 import quicker from '../utils/quicker'
+import { User } from '../models/user.model'
 
-type UserRole = 'ADMIN' | 'SUPER_ADMIN' | 'TEACHER' | 'STUDENT' | 'PARENT'
-
-interface JwtPayload {
-  id: string
-  email: string
-  role: UserRole
-}
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: JwtPayload
-    }
-  }
-}
+type UserRole = 'ADMIN' | 'USER'
 
 const isAuthenticated = handleCatchAsync(async (req, res, next) => {
-  // 1. Check access token first
   const accessToken = req.cookies.accessToken
 
   if (accessToken) {
@@ -32,11 +17,15 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
         accessToken,
         envConfig.ACCESS_TOKEN.SECRET!,
       ) as JwtPayload
-      req.user = decoded
+      // req.user = decoded
+      req.user = {
+        _id: decoded._id,
+        email: decoded.email,
+        role: decoded.role,
+      }
       return next()
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (err) {
-      // Access token is invalid/expired - proceed to refresh logic
+    } catch {
+      throw new AppError(401, 'Unauthorized - Invalid access token')
     }
   }
 
@@ -50,16 +39,9 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
     const decrypted = jwt.verify(
       refreshToken,
       envConfig.REFRESH_TOKEN.SECRET!,
-    ) as { id: string }
+    ) as { _id: string }
 
-    const user = await prisma.user.findUnique({
-      where: { id: decrypted.id },
-      select: {
-        id: true,
-        email: true,
-        role: true,
-      },
-    })
+    const user = await User.findById(decrypted._id)
 
     if (!user) {
       throw new AppError(404, 'User not found')
@@ -67,7 +49,7 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
 
     // Generate new tokens
     const newAccessToken = quicker.generateAccessToken({
-      id: user.id,
+      _id: user._id,
       email: user.email,
       role: user.role,
     })
@@ -84,11 +66,14 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
     }
 
     res.cookie('accessToken', newAccessToken, cookieOptions)
-    req.user = user
+    req.user = {
+      _id: user._id as string,
+      email: user.email!,
+      role: user.role!,
+    }
 
     return next()
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  } catch (err) {
+  } catch {
     throw new AppError(401, 'Unauthorized - Invalid refresh token')
   }
 })
