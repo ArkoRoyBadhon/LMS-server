@@ -4,7 +4,8 @@
   "description": "",
   "main": "./src/server.ts",
   "scripts": {
-    "dev": "ts-node src/server.ts",
+    "dev": "nodemon src/server.ts",
+    "ts-run": "ts-node src/server.ts",
     "build": "tsc",
     "lint": "eslint --ext .js,.ts .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",

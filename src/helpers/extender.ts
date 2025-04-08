@@ -8,5 +8,4 @@ export interface JwtUser {
 
 export interface userRequest extends Request {
   user?: JwtUser
-  cookies: { [key: string]: string }
 }

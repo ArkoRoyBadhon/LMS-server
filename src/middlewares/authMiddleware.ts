@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-namespace */
 import envConfig from '../config/envConfig'
 import AppError from '../error/AppError'
 import handleCatchAsync from '../utils/HandleCatchAsync'
@@ -17,7 +16,6 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
         accessToken,
         envConfig.ACCESS_TOKEN.SECRET!,
       ) as JwtPayload
-      // req.user = decoded
       req.user = {
         _id: decoded._id,
         email: decoded.email,

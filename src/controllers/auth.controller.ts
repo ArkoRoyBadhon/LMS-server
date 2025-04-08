@@ -83,11 +83,11 @@ const login = handleCatchAsync(async (req, res) => {
   }
 
   const accessToken = quicker.generateAccessToken({
-    id: user.id,
+    id: user._id,
     email: user.email,
     role: user.role,
   })
-  const refreshToken = quicker.generateRefreshToken(user?.id!.toString())
+  const refreshToken = quicker.generateRefreshToken(user?._id!.toString())
 
   res.cookie('accessToken', accessToken, {
     sameSite: 'strict',
@@ -102,7 +102,9 @@ const login = handleCatchAsync(async (req, res) => {
     secure: true,
   })
 
-  const { ...rest } = user
+  const userObject = user.toObject()
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const { password: newPass, ...rest } = userObject
 
   SendResponse(res, {
     success: true,
@@ -131,40 +133,6 @@ const logout = handleCatchAsync(async (req, res) => {
     data: null,
   })
 })
-
-// const refreshToken = handleCatchAsync(async (req, res) => {
-//   const { cookies } = req
-
-//   const { refreshToken } = cookies as {
-//     refreshToken: string | undefined
-//     accessToken: string | undefined
-//   }
-
-//   if (!refreshToken) {
-//     throw new AppError(40, 'No refresh token provided')
-//   }
-
-//   const accessToken = quicker.generateAccessToken({
-//     id: '',
-//     email: '',
-//     role: '',
-//   })
-
-//   res.cookie('accessToken', accessToken, {
-//     path: '/api/v1',
-//     sameSite: 'strict',
-//     maxAge: 1000 * 3600,
-//     httpOnly: true,
-//     // secure: !(config.ENV === EApplicationEnvironment.DEVELOPMENT)
-//   })
-
-//   SendResponse(res, {
-//     success: true,
-//     statusCode: 200,
-//     message: 'Token refreshed',
-//     data: { accessToken },
-//   })
-// })
 
 export default {
   register,
