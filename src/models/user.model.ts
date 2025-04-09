@@ -8,30 +8,35 @@ interface IUser extends Document {
   role?: 'ADMIN' | 'USER'
 }
 
-const UserSchema = new Schema<IUser>({
-  first_name: {
-    type: String,
-    required: true,
+const UserSchema = new Schema<IUser>(
+  {
+    first_name: {
+      type: String,
+      required: true,
+    },
+    last_name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      required: true,
+      default: 'USER',
+      enum: ['ADMIN', 'USER'],
+    },
   },
-  last_name: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    required: true,
-    default: 'USER',
-    enum: ['ADMIN', 'USER'],
-  },
-})
+)
 
 export const User = model<IUser>('User', UserSchema)

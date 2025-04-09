@@ -5,25 +5,35 @@ interface ICourse extends Document {
   description: string
   thumbnail: string
   price: number
+  modules: Schema.Types.ObjectId[]
 }
 
-const courseSchema = new Schema<ICourse>({
-  title: {
-    type: String,
-    required: true,
+const courseSchema = new Schema<ICourse>(
+  {
+    title: {
+      type: String,
+      required: true,
+    },
+    description: {
+      type: String,
+      required: true,
+    },
+    thumbnail: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+    },
+    modules: {
+      type: [Schema.Types.ObjectId],
+      ref: 'Module',
+    },
   },
-  description: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  thumbnail: {
-    type: String,
-    required: true,
-  },
-  price: {
-    type: Number,
-    required: true,
-  },
-})
+)
 
 export const Course = model<ICourse>('Course', courseSchema)

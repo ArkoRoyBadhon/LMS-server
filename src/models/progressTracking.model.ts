@@ -2,32 +2,54 @@ import { Document, model, Schema } from 'mongoose'
 
 interface IProgressTracking extends Document {
   user: Schema.Types.ObjectId
-  course: Schema.Types.ObjectId
-  lecture: Schema.Types.ObjectId
+  enrollment: Schema.Types.ObjectId
+  accessibleVideos: Schema.Types.ObjectId[]
+  completedVideos: Schema.Types.ObjectId[]
+  nextVideoToUnlock: Schema.Types.ObjectId
   isCompleted: boolean
 }
 
-const progressTrackingSchema = new Schema<IProgressTracking>({
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
+const progressTrackingSchema = new Schema<IProgressTracking>(
+  {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    enrollment: {
+      type: Schema.Types.ObjectId,
+      ref: 'Enrollment',
+      required: true,
+    },
+    accessibleVideos: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Video',
+        default: [],
+      },
+    ],
+    completedVideos: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Video',
+        default: [],
+      },
+    ],
+    nextVideoToUnlock: {
+      type: Schema.Types.ObjectId,
+      ref: 'Video',
+      required: true,
+    },
+    isCompleted: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
   },
-  course: {
-    type: Schema.Types.ObjectId,
-    ref: 'Course',
-    required: true,
+  {
+    timestamps: true,
   },
-  lecture: {
-    type: Schema.Types.ObjectId,
-    ref: 'Lecture',
-    required: true,
-  },
-  isCompleted: {
-    type: Boolean,
-    required: true,
-  },
-})
+)
 
 export const ProgressTracking = model<IProgressTracking>(
   'ProgressTracking',

@@ -27,6 +27,17 @@ const getCourse = handleCatchAsync(async (req, res) => {
     throw new AppError(400, 'Course id is required')
   }
   const course = await Course.findById(id)
+    .select('title description thumbnail price')
+    .lean()
+    .populate({
+      path: 'modules',
+      select: 'title description position isPublished',
+      populate: {
+        path: 'lectures',
+        select: 'title video_url pdf_urls position isFreePreview isPublished',
+        options: { sort: { position: 1 } },
+      },
+    })
 
   SendResponse(res, {
     success: true,

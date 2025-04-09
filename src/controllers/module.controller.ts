@@ -1,3 +1,4 @@
+import { startSession } from 'mongoose'
 import AppError from '../error/AppError'
 import { Course } from '../models/course.model'
 import { Module } from '../models/module.model'
@@ -7,24 +8,49 @@ import SendResponse from '../utils/SendResponse'
 const createModule = handleCatchAsync(async (req, res) => {
   const { title, course, position, isPublished } = req.body
 
-  const courseExists = await Course.findById(course)
-  if (!courseExists) {
-    throw new AppError(404, 'Course not found')
+  const session = await startSession()
+  session.startTransaction()
+
+  try {
+    await session.withTransaction(async () => {
+      const courseExists = await Course.findById(course).session(session)
+      if (!courseExists) {
+        throw new AppError(404, 'Course not found')
+      }
+
+      const module = await Module.create(
+        [
+          {
+            title,
+            course,
+            position,
+            isPublished,
+          },
+        ],
+        { session },
+      )
+
+      await Course.findByIdAndUpdate(
+        course,
+        { $push: { modules: module[0]._id } },
+        { session },
+      )
+
+      await session.commitTransaction()
+      session.endSession()
+
+      SendResponse(res, {
+        success: true,
+        statusCode: 201,
+        message: 'Module created successfully',
+        data: module[0],
+      })
+    })
+  } catch {
+    throw new AppError(500, 'An error occurred')
+  } finally {
+    session.endSession()
   }
-
-  const module = await Module.create({
-    title,
-    course,
-    position,
-    isPublished,
-  })
-
-  SendResponse(res, {
-    success: true,
-    statusCode: 201,
-    message: 'Module created successfully',
-    data: module,
-  })
 })
 
 const getModule = handleCatchAsync(async (req, res) => {

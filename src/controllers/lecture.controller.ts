@@ -1,3 +1,4 @@
+import { startSession } from 'mongoose'
 import AppError from '../error/AppError'
 import { Lecture } from '../models/lecture.model'
 import { Module } from '../models/module.model'
@@ -7,7 +8,7 @@ import SendResponse from '../utils/SendResponse'
 const createLecture = handleCatchAsync(async (req, res) => {
   const {
     title,
-    module,
+    module: moduleId,
     video_url,
     pdf_urls,
     position,
@@ -15,27 +16,48 @@ const createLecture = handleCatchAsync(async (req, res) => {
     isPublished,
   } = req.body
 
-  const moduleExists = await Module.findById(module)
-  if (!moduleExists) {
-    throw new AppError(404, 'Module not found')
+  const session = await startSession()
+
+  try {
+    await session.withTransaction(async () => {
+      const moduleExists = await Module.findById(moduleId).session(session)
+      if (!moduleExists) {
+        throw new AppError(404, 'Module not found')
+      }
+
+      const [lecture] = await Lecture.create(
+        [
+          {
+            title,
+            module: moduleId,
+            video_url,
+            pdf_urls,
+            position,
+            isFreePreview,
+            isPublished,
+          },
+        ],
+        { session },
+      )
+
+      await Module.findByIdAndUpdate(
+        moduleId,
+        { $push: { lectures: lecture._id } },
+        { session },
+      )
+
+      SendResponse(res, {
+        success: true,
+        statusCode: 201,
+        message: 'Lecture created successfully',
+        data: lecture,
+      })
+    })
+  } catch {
+    throw new AppError(500, 'An error occurred while creating the lecture')
+  } finally {
+    session.endSession()
   }
-
-  const lecture = await Lecture.create({
-    title,
-    module,
-    video_url,
-    pdf_urls,
-    position,
-    isFreePreview,
-    isPublished,
-  })
-
-  SendResponse(res, {
-    success: true,
-    statusCode: 201,
-    message: 'Lecture created successfully',
-    data: lecture,
-  })
 })
 
 const getLecture = handleCatchAsync(async (req, res) => {
