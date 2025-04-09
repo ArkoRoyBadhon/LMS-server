@@ -27,11 +27,11 @@ const register = handleCatchAsync(async (req, res) => {
   })
 
   const accessToken = quicker.generateAccessToken({
-    id: newUser.id,
+    id: newUser._id,
     email: newUser.email,
     role: newUser.role,
   })
-  const refreshToken = quicker.generateRefreshToken(newUser?.id!.toString())
+  const refreshToken = quicker.generateRefreshToken(newUser?._id!.toString())
 
   res.cookie('accessToken', accessToken, {
     sameSite: 'strict',
@@ -134,8 +134,21 @@ const logout = handleCatchAsync(async (req, res) => {
   })
 })
 
+const test = handleCatchAsync(async (req, res) => {
+  // const req.user
+  console.log('main user', req.user)
+
+  SendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: 'Test successfully',
+    data: req.user!,
+  })
+})
+
 export default {
   register,
   login,
   logout,
+  test,
 }

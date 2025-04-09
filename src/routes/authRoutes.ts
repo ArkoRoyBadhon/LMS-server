@@ -6,5 +6,5 @@ const router = Router()
 router.post('/login', authController.login)
 router.post('/register', authController.register)
 router.post('/logout', checker.isAuthenticated, authController.logout)
-
+router.get('/test', checker.isAuthenticated, authController.test)
 export default router

@@ -16,8 +16,9 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
         accessToken,
         envConfig.ACCESS_TOKEN.SECRET!,
       ) as JwtPayload
+
       req.user = {
-        _id: decoded._id,
+        _id: decoded.id,
         email: decoded.email,
         role: decoded.role,
       }
@@ -37,9 +38,9 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
     const decrypted = jwt.verify(
       refreshToken,
       envConfig.REFRESH_TOKEN.SECRET!,
-    ) as { _id: string }
+    ) as { id: string }
 
-    const user = await User.findById(decrypted._id)
+    const user = await User.findById(decrypted.id)
 
     if (!user) {
       throw new AppError(404, 'User not found')
@@ -47,7 +48,7 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
 
     // Generate new tokens
     const newAccessToken = quicker.generateAccessToken({
-      _id: user._id,
+      _id: user.id,
       email: user.email,
       role: user.role,
     })
@@ -65,7 +66,7 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
 
     res.cookie('accessToken', newAccessToken, cookieOptions)
     req.user = {
-      _id: user._id as string,
+      _id: user.id as string,
       email: user.email!,
       role: user.role!,
     }

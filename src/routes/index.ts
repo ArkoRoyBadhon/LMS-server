@@ -3,6 +3,7 @@ import authRoutes from './authRoutes'
 import courseRoutes from './courseRoutes'
 import moduleRoutes from './moduleRoutes'
 import lectureRoutes from './lectureRoutes'
+import enrollmentRoutes from './enrollmentRoutes'
 
 const router = Router()
 const modulePath = [
@@ -21,6 +22,10 @@ const modulePath = [
   {
     path: '/lecture',
     route: lectureRoutes,
+  },
+  {
+    path: '/enrollment',
+    route: enrollmentRoutes,
   },
 ]
 
