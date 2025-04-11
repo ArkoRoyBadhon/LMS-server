@@ -58,10 +58,7 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
       sameSite: 'strict' as const,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge:
-        process.env.NODE_ENV === 'development'
-          ? 1000 * 60 * 60 // 1 hour for dev
-          : 1000 * 60 * 15, // 15 minutes for production
+      maxAge: 1000 * 60 * 60, // 1 hour for dev
     }
 
     res.cookie('accessToken', newAccessToken, cookieOptions)

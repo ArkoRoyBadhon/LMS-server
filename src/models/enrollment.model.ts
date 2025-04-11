@@ -5,6 +5,9 @@ interface IEnrollment extends Document {
   course: Schema.Types.ObjectId
   enrolledAt: Date
   status: 'active' | 'completed' | 'cancelled'
+  accessibleVideos: Schema.Types.ObjectId[]
+  nextVideoToUnlock: Schema.Types.ObjectId
+  isCompleted: boolean
 }
 
 const enrollmentSchema = new Schema<IEnrollment>(
@@ -27,6 +30,21 @@ const enrollmentSchema = new Schema<IEnrollment>(
       type: String,
       enum: ['active', 'completed', 'cancelled'],
       default: 'active',
+    },
+    accessibleVideos: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Video',
+        default: [],
+      },
+    ],
+    nextVideoToUnlock: {
+      type: Schema.Types.ObjectId,
+      ref: 'Video',
+    },
+    isCompleted: {
+      type: Boolean,
+      default: false,
     },
   },
   {

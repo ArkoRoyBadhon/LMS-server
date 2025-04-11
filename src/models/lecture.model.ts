@@ -2,6 +2,7 @@ import { Document, model, Schema } from 'mongoose'
 
 interface ILecture extends Document {
   title: string
+  course: Schema.Types.ObjectId
   module: Schema.Types.ObjectId
   video_url: string
   pdf_urls: string[]
@@ -14,6 +15,11 @@ const lectureSchema = new Schema<ILecture>(
   {
     title: {
       type: String,
+      required: true,
+    },
+    course: {
+      type: Schema.Types.ObjectId,
+      ref: 'Course',
       required: true,
     },
     module: {

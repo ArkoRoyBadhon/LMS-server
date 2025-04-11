@@ -26,7 +26,7 @@ export default {
   },
   generateAccessToken: (payload: object) => {
     const { SECRET = '' } = envConfig.ACCESS_TOKEN
-    const token = jwt.sign(payload, SECRET, { expiresIn: '30m' })
+    const token = jwt.sign(payload, SECRET, { expiresIn: '1h' })
     return token
   },
   generateRefreshToken: (id: string) => {
