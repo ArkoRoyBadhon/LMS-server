@@ -4,6 +4,7 @@ import courseRoutes from './courseRoutes'
 import moduleRoutes from './moduleRoutes'
 import lectureRoutes from './lectureRoutes'
 import enrollmentRoutes from './enrollmentRoutes'
+import fileUploadRoutes from './fileupload.route'
 
 const router = Router()
 const modulePath = [
@@ -26,6 +27,10 @@ const modulePath = [
   {
     path: '/enrollment',
     route: enrollmentRoutes,
+  },
+  {
+    path: '/file',
+    route: fileUploadRoutes,
   },
 ]
 

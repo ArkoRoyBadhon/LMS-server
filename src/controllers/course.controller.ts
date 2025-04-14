@@ -1,7 +1,11 @@
+import { startSession } from 'mongoose'
 import AppError from '../error/AppError'
 import { Course } from '../models/course.model'
 import handleCatchAsync from '../utils/HandleCatchAsync'
 import SendResponse from '../utils/SendResponse'
+import { Module } from '../models/module.model'
+import { Lecture } from '../models/lecture.model'
+import { CourseDocument, ModuleDocument } from '../types/TypePopulate'
 
 const createCourse = handleCatchAsync(async (req, res) => {
   const { title, description, thumbnail, price } = req.body
@@ -79,15 +83,56 @@ const deleteCourse = handleCatchAsync(async (req, res) => {
   if (!id) {
     throw new AppError(400, 'Course id is required')
   }
-  const course = await Course.findByIdAndDelete(id)
-  SendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: 'Course deleted successfully',
-    data: course,
-  })
-})
 
+  const session = await startSession()
+  try {
+    await session.withTransaction(async () => {
+      const courseData = (await Course.findById(id)
+        .populate<{
+          modules: ModuleDocument[]
+        }>({
+          path: 'modules',
+          select: '_id',
+          populate: {
+            path: 'lectures',
+            select: '_id',
+          },
+        })
+        .session(session)) as CourseDocument | null
+
+      if (!courseData) {
+        throw new AppError(404, 'Course not found')
+      }
+
+      for (const module of courseData.modules) {
+        if (module.lectures && module.lectures.length > 0) {
+          const lectureIds = module.lectures.map(lecture => lecture._id)
+          await Lecture.deleteMany({ _id: { $in: lectureIds } }).session(
+            session,
+          )
+        }
+      }
+
+      const moduleIds = courseData.modules.map(module => module._id)
+      if (moduleIds.length > 0) {
+        await Module.deleteMany({ _id: { $in: moduleIds } }).session(session)
+      }
+
+      await Course.findByIdAndDelete(id).session(session)
+    })
+
+    SendResponse(res, {
+      success: true,
+      statusCode: 200,
+      message: 'Course deleted successfully',
+      data: null,
+    })
+  } catch {
+    throw new AppError(500, 'An error occurred while deleting the course')
+  } finally {
+    session.endSession()
+  }
+})
 export default {
   createCourse,
   getCourse,

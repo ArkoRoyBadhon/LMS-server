@@ -2,9 +2,12 @@ import { Router } from 'express'
 import lectureController from '../controllers/lecture.controller'
 import checker from '../middlewares/authMiddleware'
 const router = Router()
+import multer from 'multer'
+const upload = multer({ dest: 'uploads/' })
 
 router.post(
   '/create',
+  upload.array('pdfs', 10),
   checker.isAuthenticated,
   checker.roleChecker(['ADMIN']),
   lectureController.createLecture,

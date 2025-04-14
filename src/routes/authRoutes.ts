@@ -5,6 +5,7 @@ const router = Router()
 
 router.post('/login', authController.login)
 router.post('/register', authController.register)
-router.post('/logout', checker.isAuthenticated, authController.logout)
+router.post('/logout', authController.logout)
+router.get('/get-user', checker.isAuthenticated, authController.getUser)
 router.get('/test', checker.isAuthenticated, authController.test)
 export default router

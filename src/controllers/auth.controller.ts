@@ -135,6 +135,26 @@ const logout = handleCatchAsync(async (req, res) => {
   })
 })
 
+const getUser = handleCatchAsync(async (req, res) => {
+  const user = req.user
+
+  if (!user) {
+    throw new AppError(404, 'User not found')
+  }
+
+  const userdata = await User.findById(user._id)
+  if (!userdata) {
+    throw new AppError(404, 'User not found')
+  }
+
+  SendResponse(res, {
+    success: true,
+    statusCode: 200,
+    message: 'User fetched successfully',
+    data: userdata,
+  })
+})
+
 const test = handleCatchAsync(async (req, res) => {
   // const req.user
   console.log('main user', req.user)
@@ -151,5 +171,6 @@ export default {
   register,
   login,
   logout,
+  getUser,
   test,
 }

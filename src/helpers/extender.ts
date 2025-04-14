@@ -8,4 +8,5 @@ export interface JwtUser {
 
 export interface userRequest extends Request {
   user?: JwtUser
+  fileValidationError?: string
 }

@@ -10,6 +10,15 @@ const createEnrollment = handleCatchAsync(async (req, res) => {
   const { course, status } = req.body
   const { _id } = req.user as JwtUser
 
+  const isEnrolled = await Enrollment.findOne({
+    user: _id,
+    course,
+  })
+
+  if (isEnrolled) {
+    throw new AppError(409, 'You are already enrolled in this course')
+  }
+
   const enrollment = await Enrollment.create({
     user: _id,
     course,
@@ -41,15 +50,15 @@ const getEnrollmentById = handleCatchAsync(async (req, res) => {
   }
   const enrollment = await Enrollment.findById(id).populate({
     path: 'course',
-    select: 'title description position isPublished',
+    select: 'title description  isPublished',
     populate: {
       path: 'modules',
-      select: 'title video_url pdf_urls position isFreePreview isPublished',
-      options: { sort: { position: 1 } },
+      select: 'title video_url pdf_urls  isFreePreview isPublished',
+      options: { sort: { module_number: 1 } },
       populate: {
         path: 'lectures',
-        select: 'title video_url pdf_urls position isFreePreview isPublished',
-        options: { sort: { position: 1 } },
+        select: 'title video_url pdf_urls  isFreePreview isPublished',
+        options: { sort: { module_number: 1 } },
       },
     },
   })
@@ -72,19 +81,19 @@ const getEnrollmentByIdForUser = handleCatchAsync(async (req, res) => {
 
   const ee = await Enrollment.findById(id).populate<{ course: ICourse }>({
     path: 'course',
-    select: 'title description position isPublished',
+    select: 'title description  isPublished',
     populate: {
       path: 'modules',
       match: { isPublished: true },
-      select: 'title video_url pdf_urls position isFreePreview isPublished',
-      options: { sort: { position: 1 } },
+      select: 'title video_url pdf_urls  isFreePreview isPublished',
+      options: { sort: { module_number: 1 } },
       populate: {
         path: 'lectures',
         match: {
           isPublished: true,
         },
-        select: 'title video_url pdf_urls position isFreePreview isPublished',
-        options: { sort: { position: 1 } },
+        select: 'title video_url pdf_urls  isFreePreview isPublished',
+        options: { sort: { module_number: 1 } },
       },
     },
   })
@@ -106,11 +115,12 @@ const getEnrollmentByIdForUser = handleCatchAsync(async (req, res) => {
 
   const enrollment = await Enrollment.findById(id).populate({
     path: 'course',
-    select: 'title description position isPublished',
+    select: 'title description  isPublished',
     populate: {
       path: 'modules',
-      select: 'title video_url pdf_urls position isFreePreview isPublished',
-      options: { sort: { position: 1 } },
+      match: { isPublished: true },
+      select: 'title video_url pdf_urls  isFreePreview isPublished',
+      options: { sort: { module_number: 1 } },
       populate: {
         path: 'lectures',
         match: {
@@ -119,8 +129,8 @@ const getEnrollmentByIdForUser = handleCatchAsync(async (req, res) => {
             ? { title: { $regex: search as string, $options: 'i' } }
             : {}),
         },
-        select: 'title video_url pdf_urls position isFreePreview isPublished',
-        options: { sort: { position: 1 } },
+        select: 'title video_url pdf_urls  isFreePreview isPublished',
+        options: { sort: { module_number: 1 } },
       },
     },
   })
@@ -147,17 +157,17 @@ const nextLecture = handleCatchAsync(async (req, res) => {
     course: ICourse
   }>({
     path: 'course',
-    select: 'title description position isPublished',
+    select: 'title description  isPublished',
     populate: {
       path: 'modules',
       match: { isPublished: true },
-      select: 'title video_url pdf_urls position isFreePreview isPublished',
-      options: { sort: { position: 1 } },
+      select: 'title video_url pdf_urls  isFreePreview isPublished',
+      options: { sort: { module_number: 1 } },
       populate: {
         path: 'lectures',
         match: { isPublished: true },
-        select: 'title video_url pdf_urls position isFreePreview isPublished',
-        options: { sort: { position: 1 } },
+        select: 'title video_url pdf_urls  isFreePreview isPublished',
+        options: { sort: { module_number: 1 } },
       },
     },
   })
@@ -185,7 +195,7 @@ const nextLecture = handleCatchAsync(async (req, res) => {
     })
   }
 
-  // Find current position
+  // Find current
   const currentIndex = enrollment.nextVideoToUnlock
     ? allPublishedLectures.findIndex(l =>
         l._id.equals(
@@ -220,7 +230,6 @@ const nextLecture = handleCatchAsync(async (req, res) => {
       { new: true },
     )
   } else if (currentIndex === -1 && allPublishedLectures.length > 0) {
-    // First lecture
     await Enrollment.findByIdAndUpdate(
       id,
       {

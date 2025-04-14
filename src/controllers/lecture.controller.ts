@@ -11,7 +11,6 @@ const createLecture = handleCatchAsync(async (req, res) => {
     module: moduleId,
     video_url,
     pdf_urls,
-    position,
     isFreePreview,
     isPublished,
   } = req.body
@@ -32,7 +31,6 @@ const createLecture = handleCatchAsync(async (req, res) => {
             module: moduleId,
             video_url,
             pdf_urls,
-            position,
             isFreePreview,
             isPublished,
           },
