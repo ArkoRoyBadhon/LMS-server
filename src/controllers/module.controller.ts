@@ -9,8 +9,6 @@ import { Lecture } from '../models/lecture.model'
 const createModule = handleCatchAsync(async (req, res) => {
   const { title, course, isPublished } = req.body
 
-  console.log('course', req.body)
-
   const session = await startSession()
   session.startTransaction()
 
@@ -61,6 +59,7 @@ const createModule = handleCatchAsync(async (req, res) => {
 
 const getModule = handleCatchAsync(async (req, res) => {
   const id = req.params.id
+
   if (!id) {
     throw new AppError(400, 'Module id is required')
   }

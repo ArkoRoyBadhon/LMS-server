@@ -14,6 +14,7 @@ const lectureSchema = new Schema<ILecture>(
     title: {
       type: String,
       required: true,
+      minLength: 3,
     },
     module: {
       type: Schema.Types.ObjectId,
@@ -31,10 +32,12 @@ const lectureSchema = new Schema<ILecture>(
     isFreePreview: {
       type: Boolean,
       required: true,
+      default: false,
     },
     isPublished: {
       type: Boolean,
       required: true,
+      default: false,
     },
   },
   {

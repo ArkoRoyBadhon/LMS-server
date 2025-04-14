@@ -13,6 +13,7 @@ const moduleSchema = new Schema<IModule>(
     title: {
       type: String,
       required: true,
+      minLength: 3,
     },
     course: {
       type: Schema.Types.ObjectId,

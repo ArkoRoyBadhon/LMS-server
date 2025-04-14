@@ -155,22 +155,9 @@ const getUser = handleCatchAsync(async (req, res) => {
   })
 })
 
-const test = handleCatchAsync(async (req, res) => {
-  // const req.user
-  console.log('main user', req.user)
-
-  SendResponse(res, {
-    success: true,
-    statusCode: 200,
-    message: 'Test successfully',
-    data: req.user!,
-  })
-})
-
 export default {
   register,
   login,
   logout,
   getUser,
-  test,
 }

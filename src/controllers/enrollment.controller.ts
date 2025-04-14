@@ -261,7 +261,14 @@ const getEnrollmentByUser = handleCatchAsync(async (req, res) => {
     throw new AppError(404, 'Enrollment not found')
   }
 
-  const enrollment = await Enrollment.find({ user: _id, status: 'active' })
+  const enrollment = await Enrollment.find({
+    user: _id,
+    status: 'active',
+  }).populate({
+    path: 'course',
+    select: 'title description thumbnail price isPublished',
+  })
+
   SendResponse(res, {
     success: true,
     statusCode: 200,

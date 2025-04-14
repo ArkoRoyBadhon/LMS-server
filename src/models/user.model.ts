@@ -13,10 +13,14 @@ const UserSchema = new Schema<IUser>(
     first_name: {
       type: String,
       required: true,
+      minLength: 3,
+      maxLength: 20,
     },
     last_name: {
       type: String,
       required: true,
+      minLength: 3,
+      maxLength: 20,
     },
     email: {
       type: String,

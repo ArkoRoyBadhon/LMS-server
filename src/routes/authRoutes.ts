@@ -7,5 +7,4 @@ router.post('/login', authController.login)
 router.post('/register', authController.register)
 router.post('/logout', authController.logout)
 router.get('/get-user', checker.isAuthenticated, authController.getUser)
-router.get('/test', checker.isAuthenticated, authController.test)
 export default router

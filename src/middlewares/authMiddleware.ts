@@ -28,7 +28,6 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
     }
   }
 
-  // 2. Refresh token logic
   const refreshToken = req.cookies.refreshToken
   if (!refreshToken) {
     throw new AppError(401, 'Unauthorized - No valid tokens provided')
@@ -46,19 +45,17 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
       throw new AppError(404, 'User not found')
     }
 
-    // Generate new tokens
     const newAccessToken = quicker.generateAccessToken({
       _id: user.id,
       email: user.email,
       role: user.role,
     })
 
-    // Set cookies
     const cookieOptions = {
       sameSite: 'strict' as const,
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 60, // 1 hour for dev
+      maxAge: 1000 * 60 * 60 * 24, // 1 day
     }
 
     res.cookie('accessToken', newAccessToken, cookieOptions)

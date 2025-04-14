@@ -6,10 +6,10 @@ import handleZodError from '../error/zodError'
 
 const globalErrorHandler = (
   error: THttpError,
-  req: Request, // Explicitly use 'req'
+  req: Request,
   res: Response,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  next: NextFunction, // Explicitly use 'next'
+  next: NextFunction,
 ) => {
   let message = error.message || 'Something went wrong!'
   let statusCode = 500
@@ -28,6 +28,7 @@ const globalErrorHandler = (
 
   res.status(statusCode).json({
     success: false,
+    statusCode,
     message,
     errorMessages,
   })

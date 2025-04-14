@@ -13,10 +13,12 @@ const courseSchema = new Schema<ICourse>(
     title: {
       type: String,
       required: true,
+      minLength: 3,
     },
     description: {
       type: String,
       required: true,
+      minLength: 3,
     },
     thumbnail: {
       type: String,
@@ -25,6 +27,7 @@ const courseSchema = new Schema<ICourse>(
     price: {
       type: Number,
       required: true,
+      min: 0,
     },
     modules: {
       type: [Schema.Types.ObjectId],
