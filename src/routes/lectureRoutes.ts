@@ -3,6 +3,8 @@ import lectureController from '../controllers/lecture.controller'
 import checker from '../middlewares/authMiddleware'
 const router = Router()
 import multer from 'multer'
+import { validSchema } from '../middlewares/zodvalidator'
+import { lectureValidationSchema } from '../zodvalidation/lecture.zod'
 const upload = multer({ dest: 'uploads/' })
 
 router.post(
@@ -10,6 +12,7 @@ router.post(
   upload.array('pdfs', 10),
   checker.isAuthenticated,
   checker.roleChecker(['ADMIN']),
+  validSchema(lectureValidationSchema),
   lectureController.createLecture,
 )
 router.get('/all', lectureController.getAllLectures)

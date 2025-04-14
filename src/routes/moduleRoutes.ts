@@ -1,12 +1,15 @@
 import { Router } from 'express'
 import moduleController from '../controllers/module.controller'
 import checker from '../middlewares/authMiddleware'
+import { validSchema } from '../middlewares/zodvalidator'
+import { moduleValidationSchema } from '../zodvalidation/module.zod'
 const router = Router()
 
 router.post(
   '/create',
   checker.isAuthenticated,
   checker.roleChecker(['ADMIN']),
+  validSchema(moduleValidationSchema),
   moduleController.createModule,
 )
 router.get('/all', moduleController.getAllModules)

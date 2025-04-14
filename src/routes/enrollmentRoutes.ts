@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import enrollmentController from '../controllers/enrollment.controller'
 import checker from '../middlewares/authMiddleware'
+import { validSchema } from '../middlewares/zodvalidator'
+import { enrollmentValidationSchema } from '../zodvalidation/enrollment.zod'
 
 const router = Router()
 
@@ -8,6 +10,7 @@ router.post(
   '/create',
   checker.isAuthenticated,
   checker.roleChecker(['USER']),
+  validSchema(enrollmentValidationSchema),
   enrollmentController.createEnrollment,
 )
 router.get('/all', enrollmentController.getAllEnrollments)
