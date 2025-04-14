@@ -7,9 +7,7 @@ const appServer = app.listen(envConfig.PORT)
 ;(async () => {
   try {
     // await mongoose.connect(envConfig.DATABASE_URL as string)
-    await mongoose.connect(
-      'mongodb+srv://test:test@cluster0.et115mk.mongodb.net/learning?retryWrites=true&w=majority&appName=Cluster0',
-    )
+    await mongoose.connect(envConfig.DATABASE_URL as string)
     console.log('Database connected successfully')
     console.log('database connnected on port: ', envConfig.PORT)
   } catch (err) {

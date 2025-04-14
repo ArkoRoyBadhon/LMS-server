@@ -14,7 +14,10 @@ app.use(
   cors({
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS', 'HEAD'],
     origin: (origin, callback) => {
-      const allowedOrigins = ['http://localhost:3000']
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'https://lmsarko.vercel.app',
+      ]
 
       if (allowedOrigins.indexOf(origin!) !== -1 || !origin) {
         callback(null, true)
