@@ -14,12 +14,6 @@ router.get('/all', enrollmentController.getAllEnrollments)
 router.get('/single/:id', enrollmentController.getEnrollmentById)
 
 router.get(
-  '/all-by-user/:id',
-  checker.isAuthenticated,
-  enrollmentController.getEnrollmentByUserId,
-)
-
-router.get(
   '/single-for-user/:id',
   checker.isAuthenticated,
   checker.roleChecker(['USER']),

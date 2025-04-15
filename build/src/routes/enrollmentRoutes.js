@@ -10,7 +10,6 @@ const router = (0, express_1.Router)();
 router.post('/create', authMiddleware_1.default.isAuthenticated, authMiddleware_1.default.roleChecker(['USER']), enrollment_controller_1.default.createEnrollment);
 router.get('/all', enrollment_controller_1.default.getAllEnrollments);
 router.get('/single/:id', enrollment_controller_1.default.getEnrollmentById);
-router.get('/all-by-user/:id', authMiddleware_1.default.isAuthenticated, enrollment_controller_1.default.getEnrollmentByUserId);
 router.get('/single-for-user/:id', authMiddleware_1.default.isAuthenticated, authMiddleware_1.default.roleChecker(['USER']), enrollment_controller_1.default.getEnrollmentByIdForUser);
 router.post('/next-video/:id', authMiddleware_1.default.isAuthenticated, authMiddleware_1.default.roleChecker(['USER']), enrollment_controller_1.default.nextLecture);
 router.get('/all-by-user-personal', authMiddleware_1.default.isAuthenticated, authMiddleware_1.default.roleChecker(['USER']), enrollment_controller_1.default.getEnrollmentByUser);

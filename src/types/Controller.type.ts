@@ -3,6 +3,7 @@ import { Types } from 'mongoose'
 export interface ILecture {
   _id: Types.ObjectId
   // _id: Types.ObjectId | string
+  module: Types.ObjectId | string
   title: string
   video_url: string
   pdf_urls: string[]
