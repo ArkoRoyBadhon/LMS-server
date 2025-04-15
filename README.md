@@ -5,6 +5,12 @@ The Learning Management System (LMS) is a comprehensive platform for managing on
 
 ---
 
+## Note**  (Must Watch) *******
+- "Appliation not run on Incognito Mode"
+- "Render api may slow due to inactivity"
+
+---
+
 ## Technologies Used
 
 ### Frontend:
