@@ -52,7 +52,7 @@ const isAuthenticated = handleCatchAsync(async (req, res, next) => {
     })
 
     const cookieOptions = {
-      sameSite: 'strict' as const,
+      sameSite: 'none' as const,
       httpOnly: true,
       secure: true,
       maxAge: 1000 * 60 * 60 * 24, // 1 day

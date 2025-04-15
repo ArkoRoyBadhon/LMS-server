@@ -33,14 +33,14 @@ const register = handleCatchAsync(async (req, res) => {
   const refreshToken = quicker.generateRefreshToken(newUser?._id!.toString())
 
   res.cookie('accessToken', accessToken, {
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: 1000 * 60 * 60,
     httpOnly: true,
     secure: true,
   })
 
   res.cookie('refreshToken', refreshToken, {
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: 1000 * 24 * 60 * 60 * 30,
     httpOnly: true,
     secure: true,
@@ -89,14 +89,14 @@ const login = handleCatchAsync(async (req, res) => {
   const refreshToken = quicker.generateRefreshToken(user?._id!.toString())
 
   res.cookie('accessToken', accessToken, {
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: 1000 * 60 * 30,
     httpOnly: true,
     secure: true,
   })
 
   res.cookie('refreshToken', refreshToken, {
-    sameSite: 'strict',
+    sameSite: 'none',
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
     secure: true,
@@ -117,12 +117,12 @@ const login = handleCatchAsync(async (req, res) => {
 const logout = handleCatchAsync(async (req, res) => {
   res.clearCookie('accessToken', {
     path: '/',
-    sameSite: 'strict',
+    sameSite: 'none',
     secure: true,
   })
   res.clearCookie('refreshToken', {
     path: '/',
-    sameSite: 'strict',
+    sameSite: 'none',
     secure: true,
   })
 
