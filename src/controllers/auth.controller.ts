@@ -36,14 +36,14 @@ const register = handleCatchAsync(async (req, res) => {
     sameSite: 'strict',
     maxAge: 1000 * 60 * 60,
     httpOnly: true,
-    secure: false,
+    secure: true,
   })
 
   res.cookie('refreshToken', refreshToken, {
     sameSite: 'strict',
     maxAge: 1000 * 24 * 60 * 60 * 30,
     httpOnly: true,
-    secure: false,
+    secure: true,
   })
 
   SendResponse(res, {
@@ -92,14 +92,14 @@ const login = handleCatchAsync(async (req, res) => {
     sameSite: 'strict',
     maxAge: 1000 * 60 * 30,
     httpOnly: true,
-    secure: false,
+    secure: true,
   })
 
   res.cookie('refreshToken', refreshToken, {
     sameSite: 'strict',
     maxAge: 1000 * 60 * 60 * 24 * 7,
     httpOnly: true,
-    secure: false,
+    secure: true,
   })
 
   const userObject = user.toObject()
@@ -118,12 +118,12 @@ const logout = handleCatchAsync(async (req, res) => {
   res.clearCookie('accessToken', {
     path: '/',
     sameSite: 'strict',
-    secure: false,
+    secure: true,
   })
   res.clearCookie('refreshToken', {
     path: '/',
     sameSite: 'strict',
-    secure: false,
+    secure: true,
   })
 
   SendResponse(res, {
