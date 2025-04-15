@@ -3,7 +3,6 @@ import bcrypt from 'bcrypt'
 import handleCatchAsync from '../utils/HandleCatchAsync'
 import SendResponse from '../utils/SendResponse'
 import quicker from '../utils/quicker'
-import envConfig from '../config/envConfig'
 import { User } from '../models/user.model'
 
 const register = handleCatchAsync(async (req, res) => {
@@ -119,12 +118,12 @@ const logout = handleCatchAsync(async (req, res) => {
   res.clearCookie('accessToken', {
     path: '/',
     sameSite: 'strict',
-    secure: envConfig.NODE_ENV === 'production' ? true : false,
+    secure: true,
   })
   res.clearCookie('refreshToken', {
     path: '/',
     sameSite: 'strict',
-    secure: envConfig.NODE_ENV === 'production' ? true : false,
+    secure: true,
   })
 
   SendResponse(res, {
