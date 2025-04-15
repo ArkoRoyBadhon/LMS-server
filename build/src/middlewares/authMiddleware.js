@@ -43,7 +43,7 @@ const isAuthenticated = (0, HandleCatchAsync_1.default)(async (req, res, next) =
         const cookieOptions = {
             sameSite: 'strict',
             httpOnly: true,
-            secure: true,
+            secure: false,
             maxAge: 1000 * 60 * 60 * 24, // 1 day
         };
         res.cookie('accessToken', newAccessToken, cookieOptions);
